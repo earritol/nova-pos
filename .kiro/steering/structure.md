@@ -2,19 +2,21 @@
 
 Nova Platform uses a monorepo architecture.
 
-## Root Structure
+---
+
+# Root Structure
 
 ```
 apps/
 packages/
 docs/
-specs/
 infrastructure/
+.kiro/
 ```
 
 ---
 
-## apps
+# apps
 
 Contains executable applications.
 
@@ -26,68 +28,201 @@ Examples:
 
 Applications must remain independent.
 
+Applications orchestrate user interaction but should contain minimal business logic.
+
 ---
 
-## packages
+# packages
 
 Contains reusable libraries shared across applications.
 
-Examples:
+Example packages:
 
 - ui
 - shared
 - types
 - utils
 
-Business logic should not be duplicated.
+Business logic should never be duplicated.
 
 ---
 
-## docs
+# Domain Modules
 
-Contains product documentation.
+Business logic is organized by domain.
+
+Recommended structure:
+
+```
+packages/shared/domains/
+
+organization/
+    domain/
+    application/
+    infrastructure/
+
+authentication/
+products/
+inventory/
+sales/
+customers/
+```
+
+Each domain owns:
+
+- Domain Model
+- Use Cases
+- Repositories
+- Infrastructure Implementations
+- Tests
+
+---
+
+# Layer Responsibilities
+
+Each domain follows the same architecture.
+
+```
+Domain
+    ↓
+Application
+    ↓
+Infrastructure
+    ↓
+Presentation
+```
+
+Responsibilities:
+
+Domain
+
+- Entities
+- Value Objects
+- Aggregates
+- Domain Services
+- Repository Interfaces
+- Business Rules
+
+Application
+
+- Use Cases
+- Orchestration
+- Transactions
+
+Infrastructure
+
+- Database
+- APIs
+- Supabase
+- IndexedDB
+- External Services
+
+Presentation
+
+- UI
+- Forms
+- Components
+- Screens
+
+---
+
+# Dependency Rules
+
+Allowed dependencies:
+
+Application
+→ Domain
+
+Infrastructure
+→ Domain
+
+Presentation
+→ Application
+
+Forbidden:
+
+Domain
+→ Infrastructure
+
+Domain
+→ UI
+
+Application
+→ UI
+
+Infrastructure
+→ Presentation
+
+Packages must never depend on applications.
+
+Applications may depend on packages.
+
+---
+
+# docs
+
+Contains architectural documentation.
 
 Documentation is the source of truth.
 
+Examples:
+
+- Architecture
+- ADRs
+- Diagrams
+- Decisions
+
 ---
 
-## specs
+# .kiro
 
-Every epic has its own specification.
+Contains AI-assisted development artifacts.
 
-Example:
+```
+.kiro/
+
+steering/
 
 specs/
+```
 
-CORE-001/
+Steering provides permanent project knowledge.
 
+Specifications describe individual epics.
+
+---
+
+# Specification Workflow
+
+Every epic follows the same workflow.
+
+```
 requirements.md
+
+↓
 
 design.md
 
+↓
+
 tasks.md
 
-Specifications should remain independent.
+↓
+
+implementation
+```
+
+Design must be approved before implementation begins.
 
 ---
 
-## infrastructure
-
-Infrastructure as Code.
-
-Deployment.
-
-Cloud resources.
-
-Configuration.
-
----
-
-## Naming
+# Naming
 
 Folders use kebab-case.
 
 Types use PascalCase.
+
+Interfaces use PascalCase.
 
 Variables use camelCase.
 
@@ -95,24 +230,30 @@ Constants use UPPER_SNAKE_CASE.
 
 ---
 
-## Code Organization
+# Code Organization
 
 Business logic belongs to domain modules.
 
-UI should never contain business logic.
+UI should never contain business rules.
 
-Infrastructure should be isolated.
+Infrastructure remains isolated.
 
 Shared code belongs in packages.
 
+Favor composition over inheritance.
+
 ---
 
-## Dependencies
+# General Principles
 
-Applications may depend on packages.
+Small modules.
 
-Packages must never depend on applications.
+Small files.
 
-Documentation should never depend on implementation.
+Clear ownership.
 
-Specifications describe implementation but are not implementation.
+Explicit dependencies.
+
+High cohesion.
+
+Low coupling.

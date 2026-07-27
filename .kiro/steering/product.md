@@ -4,7 +4,7 @@
 
 Nova Platform is an ecosystem of business applications designed for small and medium-sized businesses.
 
-Rather than building a single monolithic ERP, Nova Platform consists of independent products that solve specific business problems while sharing a common platform.
+Instead of building a single monolithic ERP, Nova Platform consists of independent products that solve specific business problems while sharing a common platform.
 
 Current products:
 
@@ -49,6 +49,8 @@ Avoid unnecessary configuration.
 
 Prefer convention over configuration.
 
+Build products that can evolve incrementally.
+
 ---
 
 ## Nova POS
@@ -62,7 +64,7 @@ Provide a modern Point of Sale system for SMB businesses.
 Characteristics:
 
 - Offline First
-- Multi-tenant
+- Multi-Tenant
 - Local authentication
 - Inventory
 - Sales
@@ -81,10 +83,28 @@ Characteristics:
 
 - Online First
 - Email OTP Authentication
-- Consumer oriented
+- Consumer-oriented
 - Rewards
 - Visits
 - Campaigns
+
+---
+
+## Platform Services
+
+Nova Platform provides shared platform capabilities that can be consumed by multiple products.
+
+Examples include:
+
+- Organization Management
+- Synchronization
+- Audit
+- Configuration
+- Notifications (future)
+
+Platform Services contain reusable platform capabilities.
+
+They must not contain product-specific business rules.
 
 ---
 
@@ -94,7 +114,7 @@ Nova POS is not an ERP.
 
 Nova POS should remain focused on retail operations.
 
-Features that belong to accounting, payroll, manufacturing, CRM or ERP systems should not be added unless they directly support the POS experience.
+Features that belong to accounting, payroll, manufacturing, CRM, or ERP systems should not be added unless they directly support the POS experience.
 
 ---
 
@@ -102,21 +122,40 @@ Features that belong to accounting, payroll, manufacturing, CRM or ERP systems s
 
 Organizations are tenants.
 
-Every business entity belongs to one organization.
+Every business entity belongs to exactly one organization.
 
 Tenant isolation is mandatory.
 
+No cross-tenant data access is allowed.
+
 ---
 
-## Architecture
+## Shared Platform Principles
+
+Products may share infrastructure.
+
+Products must not share business logic.
+
+Business rules belong either to:
+
+- the owning Product
+- or the Platform Domain
+
+Never duplicate business rules across products.
+
+---
+
+## Architecture Principles
 
 Products remain independent.
 
 Infrastructure is shared.
 
-Business logic belongs to products.
+Business logic belongs to products or platform domains.
 
 Shared capabilities belong to the platform.
+
+Dependencies should always point toward abstractions.
 
 ---
 
@@ -131,5 +170,7 @@ When generating requirements:
 - Respect Offline First.
 - Respect Multi-Tenant.
 - Respect product boundaries.
+- Keep business logic inside the correct domain.
+- Favor consistency over cleverness.
 
 Every specification should align with these principles.
