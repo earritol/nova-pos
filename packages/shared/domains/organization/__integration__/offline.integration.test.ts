@@ -1,7 +1,6 @@
 import 'fake-indexeddb/auto';
 import { describe, it, expect } from 'vitest';
 import { OrganizationLocalStore } from '../infrastructure/local/organization-local-store';
-import { BranchLocalStore } from '../infrastructure/local/branch-local-store';
 import type { Organization } from '../domain/organization';
 import type { Branch } from '../domain/branch';
 
@@ -63,13 +62,13 @@ describe('Integration: Offline read/write', () => {
   });
 
   it('creates a branch offline and lists branches correctly', async () => {
-    const branchStore = new BranchLocalStore();
+    const store = new OrganizationLocalStore();
     const orgId = crypto.randomUUID();
     const branch1 = makeBranch(orgId);
     const branch2 = makeBranch(orgId);
-    await branchStore.save(branch1);
-    await branchStore.save(branch2);
-    const all = await branchStore.findAllByOrganization(orgId);
+    await store.saveBranch(orgId, branch1);
+    await store.saveBranch(orgId, branch2);
+    const all = await store.findAllBranches(orgId);
     const ids = all.map((b) => b.id);
     expect(ids).toContain(branch1.id);
     expect(ids).toContain(branch2.id);
