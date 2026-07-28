@@ -53,6 +53,22 @@ Build products that can evolve incrementally.
 
 ---
 
+## Platform Evolution
+
+Nova Platform evolves incrementally through independent CORE modules.
+
+Each CORE should:
+
+- Extend existing platform capabilities.
+- Reuse shared Platform Services whenever possible.
+- Preserve previously approved architectural decisions.
+- Avoid introducing new architectural patterns unless justified by an ADR.
+- Favor incremental evolution over architectural redesign.
+
+Every completed CORE should strengthen the platform rather than create isolated implementations.
+
+---
+
 ## Nova POS
 
 Nova POS is the flagship product of Nova Platform.
@@ -174,3 +190,7 @@ When generating requirements:
 - Favor consistency over cleverness.
 
 Every specification should align with these principles.
+
+Generated specifications should prioritize consistency with existing platform capabilities over introducing new abstractions.
+
+When existing Platform Services satisfy a requirement, they should be reused instead o

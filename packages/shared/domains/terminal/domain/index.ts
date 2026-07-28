@@ -8,3 +8,5 @@ export type { RegisterDeviceInput } from './validation/device-registration-valid
 export { validateRegisterDevice } from './validation/device-registration-validation';
 export { suspendTerminal, reactivateTerminal } from './lifecycle/terminal-lifecycle';
 export { revokeDevice, deactivateDevice } from './lifecycle/device-registration-lifecycle';
+export type { TerminalRepository } from './repositories/terminal-repository';
+export type { DeviceRegistrationRepository } from './repositories/device-registration-repository';

@@ -3,7 +3,7 @@ export type AuditAction = 'created' | 'updated' | 'deactivated' | 'reactivated' 
 export interface AuditEntry {
   id: string;
   organizationId: string;
-  entityType: 'organization' | 'branch';
+  entityType: string;
   entityId: string;
   action: AuditAction;
   performedBy: string;

@@ -27,7 +27,11 @@ Architecture Review
     ↓
 Tasks
     ↓
-Implementation
+Architecture Review
+    ↓
+Implementation (Incremental Waves)
+    ↓
+Architecture Review
     ↓
 Pull Request
     ↓
@@ -93,6 +97,19 @@ No implementation should begin before these three documents are approved.
 
 Architecture reviews occur twice.
 
+## Architecture Review Goals
+
+Architecture reviews validate more than code quality.
+
+Each review should confirm:
+
+- Architectural consistency.
+- Dependency direction.
+- Domain boundaries.
+- Reuse of existing Platform Services.
+- Compliance with approved ADRs.
+- Preservation of Offline First principles.
+
 ## First Review
 
 After requirements.md
@@ -142,6 +159,21 @@ Stop.
 Ask for clarification.
 
 Never guess business rules.
+
+---
+
+## Incremental Implementation
+
+Large implementations should be divided into small implementation waves.
+
+Each wave should:
+
+- Preserve a working state.
+- Compile successfully.
+- Keep tests passing.
+- Be reviewed before continuing when the implementation is architecturally significant.
+
+Incremental reviews reduce architectural drift and improve long-term maintainability.
 
 ---
 
@@ -285,3 +317,20 @@ After completing an epic:
 - Improve templates before starting the next epic.
 
 The development process should evolve continuously while maintaining consistency across the platform.
+
+---
+
+## Architectural Stability
+
+Approved architecture should remain stable during implementation.
+
+Implementation should adapt to the approved design.
+
+If implementation reveals a significant architectural issue:
+
+- Stop implementation.
+- Update the specification.
+- Review the architectural change.
+- Continue only after approval.
+
+Architectural redesign should never happen implicitly during coding.

@@ -2,7 +2,7 @@ export type SyncStatus = 'pending' | 'in_progress' | 'completed' | 'failed';
 
 export interface SyncOperation {
   id: string;
-  entityType: 'organization' | 'branch';
+  entityType: string;
   entityId: string;
   operationType: 'create' | 'update';
   payload: Record<string, unknown>;
