@@ -1,7 +1,6 @@
 import type { Organization } from '../domain/organization';
 import type { Branch } from '../domain/branch';
 import type { OrganizationRepository } from '../domain/repositories/organization-repository';
-import type { BranchRepository } from '../domain/repositories/branch-repository';
 import type { AuditService } from '../domain/audit';
 import type { TenantContext } from '../domain/tenant-context';
 import type { Result } from '../domain/result';
@@ -25,18 +24,15 @@ import { reactivateBranchUseCase } from './use-cases/reactivate-branch';
 
 export interface OrganizationApplicationServiceDeps {
   organizationRepository: OrganizationRepository;
-  branchRepository: BranchRepository;
   auditService: AuditService;
 }
 
 export class OrganizationApplicationService {
   private readonly orgRepo: OrganizationRepository;
-  private readonly branchRepo: BranchRepository;
   private readonly auditService: AuditService;
 
   constructor(deps: OrganizationApplicationServiceDeps) {
     this.orgRepo = deps.organizationRepository;
-    this.branchRepo = deps.branchRepository;
     this.auditService = deps.auditService;
   }
 
@@ -81,36 +77,36 @@ export class OrganizationApplicationService {
 
   async createBranch(orgId: string, input: CreateBranchInput, userId: string): Promise<Result<Branch>> {
     return createBranch(orgId, input, userId, {
-      branchRepository: this.branchRepo,
+      organizationRepository: this.orgRepo,
       auditService: this.auditService,
     });
   }
 
   async getBranch(tenantContext: TenantContext, branchId: string): Promise<Result<Branch>> {
-    return getBranch(tenantContext, branchId, { branchRepository: this.branchRepo });
+    return getBranch(tenantContext, branchId, { organizationRepository: this.orgRepo });
   }
 
   async listBranches(tenantContext: TenantContext): Promise<Result<Branch[]>> {
-    return listBranches(tenantContext, { branchRepository: this.branchRepo });
+    return listBranches(tenantContext, { organizationRepository: this.orgRepo });
   }
 
   async updateBranch(tenantContext: TenantContext, branchId: string, input: UpdateBranchInput): Promise<Result<Branch>> {
     return updateBranch(tenantContext, branchId, input, {
-      branchRepository: this.branchRepo,
+      organizationRepository: this.orgRepo,
       auditService: this.auditService,
     });
   }
 
   async deactivateBranch(tenantContext: TenantContext, branchId: string): Promise<Result<Branch>> {
     return deactivateBranchUseCase(tenantContext, branchId, {
-      branchRepository: this.branchRepo,
+      organizationRepository: this.orgRepo,
       auditService: this.auditService,
     });
   }
 
   async reactivateBranch(tenantContext: TenantContext, branchId: string): Promise<Result<Branch>> {
     return reactivateBranchUseCase(tenantContext, branchId, {
-      branchRepository: this.branchRepo,
+      organizationRepository: this.orgRepo,
       auditService: this.auditService,
     });
   }

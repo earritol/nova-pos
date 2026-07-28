@@ -1,62 +1,65 @@
 import type { Organization } from '../domain/organization';
 import type { Branch } from '../domain/branch';
 import type { OrganizationRepository } from '../domain/repositories/organization-repository';
-import type { BranchRepository } from '../domain/repositories/branch-repository';
 import type { AuditEntry, AuditService } from '../domain/audit';
 
 export class InMemoryOrganizationRepository implements OrganizationRepository {
-  private store = new Map<string, Organization>();
+  private orgStore = new Map<string, Organization>();
+  private branchStore = new Map<string, Branch>();
+
+  // Organization operations
 
   async save(org: Organization): Promise<void> {
-    this.store.set(org.id, { ...org });
+    this.orgStore.set(org.id, { ...org });
   }
 
   async findById(orgId: string): Promise<Organization | null> {
-    return this.store.get(orgId) ?? null;
+    return this.orgStore.get(orgId) ?? null;
   }
 
   async findByTaxIdentifier(taxId: string, country: string): Promise<Organization | null> {
-    for (const org of this.store.values()) {
+    for (const org of this.orgStore.values()) {
       if (org.taxIdentifier === taxId && org.country === country) return org;
     }
     return null;
   }
 
   async update(org: Organization): Promise<void> {
-    this.store.set(org.id, { ...org });
+    this.orgStore.set(org.id, { ...org });
   }
 
-  clear(): void {
-    this.store.clear();
-  }
-}
+  // Branch operations
 
-export class InMemoryBranchRepository implements BranchRepository {
-  private store = new Map<string, Branch>();
-
-  async save(branch: Branch): Promise<void> {
-    this.store.set(branch.id, { ...branch });
+  async saveBranch(_orgId: string, branch: Branch): Promise<void> {
+    this.branchStore.set(branch.id, { ...branch });
   }
 
-  async findById(orgId: string, branchId: string): Promise<Branch | null> {
-    const b = this.store.get(branchId);
+  async findBranchById(orgId: string, branchId: string): Promise<Branch | null> {
+    const b = this.branchStore.get(branchId);
     if (!b || b.organizationId !== orgId) return null;
     return b;
   }
 
-  async findByName(orgId: string, name: string): Promise<Branch | null> {
-    for (const b of this.store.values()) {
+  async findBranchByCode(orgId: string, code: string): Promise<Branch | null> {
+    for (const b of this.branchStore.values()) {
+      if (b.organizationId === orgId && b.code === code) return b;
+    }
+    return null;
+  }
+
+  async findBranchByName(orgId: string, name: string): Promise<Branch | null> {
+    for (const b of this.branchStore.values()) {
       if (b.organizationId === orgId && b.name === name) return b;
     }
     return null;
   }
 
-  async findAllByOrganization(orgId: string): Promise<Branch[]> {
-    return [...this.store.values()].filter((b) => b.organizationId === orgId);
+  async findAllBranches(orgId: string): Promise<Branch[]> {
+    return [...this.branchStore.values()].filter((b) => b.organizationId === orgId);
   }
 
-  async update(branch: Branch): Promise<void> {
-    this.store.set(branch.id, { ...branch });
+  async updateBranch(_orgId: string, branch: Branch): Promise<void> {
+    this.branchStore.set(branch.id, { ...branch });
   }
 
   async hasActiveDependencies(_orgId: string, _branchId: string): Promise<boolean> {
@@ -64,7 +67,8 @@ export class InMemoryBranchRepository implements BranchRepository {
   }
 
   clear(): void {
-    this.store.clear();
+    this.orgStore.clear();
+    this.branchStore.clear();
   }
 }
 

@@ -5,17 +5,15 @@ import { getOrganization } from '../application/use-cases/get-organization';
 import { createBranch } from '../application/use-cases/create-branch';
 import { getBranch } from '../application/use-cases/get-branch';
 import { listBranches } from '../application/use-cases/list-branches';
-import { InMemoryOrganizationRepository, InMemoryBranchRepository, InMemoryAuditService } from './fakes';
+import { InMemoryOrganizationRepository, InMemoryAuditService } from './fakes';
 import { validCreateOrganizationInput, validCreateBranchInput } from './arbitraries';
 
 describe('Feature: core-001-organization, Property 12: Tenant isolation enforcement', () => {
   let orgRepo: InMemoryOrganizationRepository;
-  let branchRepo: InMemoryBranchRepository;
   let auditService: InMemoryAuditService;
 
   beforeEach(() => {
     orgRepo = new InMemoryOrganizationRepository();
-    branchRepo = new InMemoryBranchRepository();
     auditService = new InMemoryAuditService();
   });
 
@@ -41,14 +39,13 @@ describe('Feature: core-001-organization, Property 12: Tenant isolation enforcem
     fc.assert(
       fc.asyncProperty(validCreateOrganizationInput, validCreateBranchInput, fc.uuid(), async (orgInput, branchInput, userId) => {
         orgRepo.clear();
-        branchRepo.clear();
         auditService.clear();
         const orgResult = await createOrganization(orgInput, userId, { organizationRepository: orgRepo, auditService });
         if (!orgResult.success) return;
-        const branchResult = await createBranch(orgResult.data.id, branchInput, userId, { branchRepository: branchRepo, auditService });
+        const branchResult = await createBranch(orgResult.data.id, branchInput, userId, { organizationRepository: orgRepo, auditService });
         if (!branchResult.success) return;
         const otherContext = { organizationId: crypto.randomUUID(), userId };
-        const accessResult = await getBranch(otherContext, branchResult.data.id, { branchRepository: branchRepo });
+        const accessResult = await getBranch(otherContext, branchResult.data.id, { organizationRepository: orgRepo });
         expect(accessResult.success).toBe(false);
       }),
       { numRuns: 100 },
@@ -59,13 +56,12 @@ describe('Feature: core-001-organization, Property 12: Tenant isolation enforcem
     fc.assert(
       fc.asyncProperty(validCreateOrganizationInput, validCreateBranchInput, fc.uuid(), async (orgInput, branchInput, userId) => {
         orgRepo.clear();
-        branchRepo.clear();
         auditService.clear();
         const orgResult = await createOrganization(orgInput, userId, { organizationRepository: orgRepo, auditService });
         if (!orgResult.success) return;
-        await createBranch(orgResult.data.id, branchInput, userId, { branchRepository: branchRepo, auditService });
+        await createBranch(orgResult.data.id, branchInput, userId, { organizationRepository: orgRepo, auditService });
         const otherContext = { organizationId: crypto.randomUUID(), userId };
-        const listResult = await listBranches(otherContext, { branchRepository: branchRepo });
+        const listResult = await listBranches(otherContext, { organizationRepository: orgRepo });
         expect(listResult.success).toBe(true);
         if (listResult.success) {
           expect(listResult.data).toHaveLength(0);

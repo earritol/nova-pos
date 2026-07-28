@@ -11,7 +11,6 @@ export type {
 export { getDefaultConfiguration, COUNTRY_DEFAULTS } from './organization-configuration';
 export type { Branch, BranchStatus } from './branch';
 export type { OrganizationRepository } from './repositories/organization-repository';
-export type { BranchRepository } from './repositories/branch-repository';
 export type { AuditEntry, AuditAction, AuditService } from './audit';
 export type {
   CreateOrganizationInput,

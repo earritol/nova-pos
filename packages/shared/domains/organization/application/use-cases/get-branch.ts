@@ -1,11 +1,11 @@
 import type { Branch } from '../../domain/branch';
-import type { BranchRepository } from '../../domain/repositories/branch-repository';
+import type { OrganizationRepository } from '../../domain/repositories/organization-repository';
 import type { TenantContext } from '../../domain/tenant-context';
 import type { Result } from '../../domain/result';
 import { ok, fail } from '../../domain/result';
 
 export interface GetBranchDeps {
-  branchRepository: BranchRepository;
+  organizationRepository: OrganizationRepository;
 }
 
 export async function getBranch(
@@ -13,7 +13,7 @@ export async function getBranch(
   branchId: string,
   deps: GetBranchDeps,
 ): Promise<Result<Branch>> {
-  const branch = await deps.branchRepository.findById(tenantContext.organizationId, branchId);
+  const branch = await deps.organizationRepository.findBranchById(tenantContext.organizationId, branchId);
   if (!branch) {
     return fail('BRANCH_NOT_FOUND', 'Branch does not exist');
   }

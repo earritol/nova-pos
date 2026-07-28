@@ -5,39 +5,41 @@ import { createBranch } from '../application/use-cases/create-branch';
 import { getBranch } from '../application/use-cases/get-branch';
 import { listBranches } from '../application/use-cases/list-branches';
 import type { OrganizationRepository } from '../domain/repositories/organization-repository';
-import type { BranchRepository } from '../domain/repositories/branch-repository';
 import type { AuditService, AuditEntry } from '../domain/audit';
 import type { Organization } from '../domain/organization';
 import type { Branch } from '../domain/branch';
 
-// In-memory implementations that simulate RLS by scoping to organization
+// In-memory implementation that simulates RLS by scoping to organization
 class ScopedOrgRepo implements OrganizationRepository {
-  private store = new Map<string, Organization>();
-  async save(org: Organization) { this.store.set(org.id, { ...org }); }
-  async findById(orgId: string) { return this.store.get(orgId) ?? null; }
+  private orgStore = new Map<string, Organization>();
+  private branchStore = new Map<string, Branch>();
+
+  async save(org: Organization) { this.orgStore.set(org.id, { ...org }); }
+  async findById(orgId: string) { return this.orgStore.get(orgId) ?? null; }
   async findByTaxIdentifier(taxId: string, country: string) {
-    for (const o of this.store.values()) { if (o.taxIdentifier === taxId && o.country === country) return o; }
+    for (const o of this.orgStore.values()) { if (o.taxIdentifier === taxId && o.country === country) return o; }
     return null;
   }
-  async update(org: Organization) { this.store.set(org.id, { ...org }); }
-}
+  async update(org: Organization) { this.orgStore.set(org.id, { ...org }); }
 
-class ScopedBranchRepo implements BranchRepository {
-  private store = new Map<string, Branch>();
-  async save(b: Branch) { this.store.set(b.id, { ...b }); }
-  async findById(orgId: string, branchId: string) {
-    const b = this.store.get(branchId);
+  async saveBranch(_orgId: string, b: Branch) { this.branchStore.set(b.id, { ...b }); }
+  async findBranchById(orgId: string, branchId: string) {
+    const b = this.branchStore.get(branchId);
     if (!b || b.organizationId !== orgId) return null;
     return b;
   }
-  async findByName(orgId: string, name: string) {
-    for (const b of this.store.values()) { if (b.organizationId === orgId && b.name === name) return b; }
+  async findBranchByCode(orgId: string, code: string) {
+    for (const b of this.branchStore.values()) { if (b.organizationId === orgId && b.code === code) return b; }
     return null;
   }
-  async findAllByOrganization(orgId: string) {
-    return [...this.store.values()].filter((b) => b.organizationId === orgId);
+  async findBranchByName(orgId: string, name: string) {
+    for (const b of this.branchStore.values()) { if (b.organizationId === orgId && b.name === name) return b; }
+    return null;
   }
-  async update(b: Branch) { this.store.set(b.id, { ...b }); }
+  async findAllBranches(orgId: string) {
+    return [...this.branchStore.values()].filter((b) => b.organizationId === orgId);
+  }
+  async updateBranch(_orgId: string, b: Branch) { this.branchStore.set(b.id, { ...b }); }
   async hasActiveDependencies() { return false; }
 }
 
@@ -70,7 +72,6 @@ describe('Integration: RLS tenant isolation', () => {
 
   it('rejects cross-organization access to branch data', async () => {
     const orgRepo = new ScopedOrgRepo();
-    const branchRepo = new ScopedBranchRepo();
     const audit = new NoopAuditService();
 
     const orgResult = await createOrganization(
@@ -85,17 +86,17 @@ describe('Integration: RLS tenant isolation', () => {
       orgResult.data.id,
       { name: 'Main', code: 'MAIN', address: '123 St', phone: '555-0100' },
       'user-1',
-      { branchRepository: branchRepo, auditService: audit },
+      { organizationRepository: orgRepo, auditService: audit },
     );
     expect(branchResult.success).toBe(true);
     if (!branchResult.success) return;
 
     // Different org context
     const otherContext = { organizationId: crypto.randomUUID(), userId: 'user-2' };
-    const accessResult = await getBranch(otherContext, branchResult.data.id, { branchRepository: branchRepo });
+    const accessResult = await getBranch(otherContext, branchResult.data.id, { organizationRepository: orgRepo });
     expect(accessResult.success).toBe(false);
 
-    const listResult = await listBranches(otherContext, { branchRepository: branchRepo });
+    const listResult = await listBranches(otherContext, { organizationRepository: orgRepo });
     expect(listResult.success).toBe(true);
     if (listResult.success) {
       expect(listResult.data).toHaveLength(0);
@@ -104,7 +105,6 @@ describe('Integration: RLS tenant isolation', () => {
 
   it('enforces that every branch belongs to exactly one organization', async () => {
     const orgRepo = new ScopedOrgRepo();
-    const branchRepo = new ScopedBranchRepo();
     const audit = new NoopAuditService();
 
     const org1 = await createOrganization(
@@ -118,19 +118,19 @@ describe('Integration: RLS tenant isolation', () => {
       org1.data.id,
       { name: 'Centro', code: 'CENTRO', address: 'Av Central', phone: '555-0001' },
       'user-1',
-      { branchRepository: branchRepo, auditService: audit },
+      { organizationRepository: orgRepo, auditService: audit },
     );
     expect(branch.success).toBe(true);
     if (!branch.success) return;
 
     // Verify branch is scoped to org1
     const correctContext = { organizationId: org1.data.id, userId: 'user-1' };
-    const found = await getBranch(correctContext, branch.data.id, { branchRepository: branchRepo });
+    const found = await getBranch(correctContext, branch.data.id, { organizationRepository: orgRepo });
     expect(found.success).toBe(true);
 
     // Verify branch is not accessible from a different org
     const wrongContext = { organizationId: crypto.randomUUID(), userId: 'user-1' };
-    const notFound = await getBranch(wrongContext, branch.data.id, { branchRepository: branchRepo });
+    const notFound = await getBranch(wrongContext, branch.data.id, { organizationRepository: orgRepo });
     expect(notFound.success).toBe(false);
   });
 });

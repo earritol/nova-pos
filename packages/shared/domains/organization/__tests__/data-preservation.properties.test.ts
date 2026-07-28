@@ -7,7 +7,7 @@ import { deactivateBranchUseCase } from '../application/use-cases/deactivate-bra
 import { getOrganization } from '../application/use-cases/get-organization';
 import { getBranch } from '../application/use-cases/get-branch';
 import { getDefaultConfiguration } from '../domain/organization-configuration';
-import { InMemoryOrganizationRepository, InMemoryBranchRepository, InMemoryAuditService } from './fakes';
+import { InMemoryOrganizationRepository, InMemoryAuditService } from './fakes';
 import { validCreateOrganizationInput, validCreateBranchInput } from './arbitraries';
 
 describe('Feature: core-001-organization, Property 15: Data preservation across status changes', () => {
@@ -35,15 +35,14 @@ describe('Feature: core-001-organization, Property 15: Data preservation across 
     fc.assert(
       fc.asyncProperty(validCreateOrganizationInput, validCreateBranchInput, fc.uuid(), async (orgInput, branchInput, userId) => {
         const localOrgRepo = new InMemoryOrganizationRepository();
-        const localBranchRepo = new InMemoryBranchRepository();
         const localAudit = new InMemoryAuditService();
         const orgResult = await createOrganization(orgInput, userId, { organizationRepository: localOrgRepo, auditService: localAudit });
         if (!orgResult.success) return;
-        const branchResult = await createBranch(orgResult.data.id, branchInput, userId, { branchRepository: localBranchRepo, auditService: localAudit });
+        const branchResult = await createBranch(orgResult.data.id, branchInput, userId, { organizationRepository: localOrgRepo, auditService: localAudit });
         if (!branchResult.success) return;
         const tenantContext = { organizationId: orgResult.data.id, userId };
-        await deactivateBranchUseCase(tenantContext, branchResult.data.id, { branchRepository: localBranchRepo, auditService: localAudit });
-        const found = await getBranch(tenantContext, branchResult.data.id, { branchRepository: localBranchRepo });
+        await deactivateBranchUseCase(tenantContext, branchResult.data.id, { organizationRepository: localOrgRepo, auditService: localAudit });
+        const found = await getBranch(tenantContext, branchResult.data.id, { organizationRepository: localOrgRepo });
         expect(found.success).toBe(true);
         if (found.success) {
           expect(found.data.status).toBe('inactive');
@@ -77,14 +76,13 @@ describe('Feature: core-001-organization, Property 18: Branch organization immut
     fc.assert(
       fc.asyncProperty(validCreateOrganizationInput, validCreateBranchInput, fc.uuid(), async (orgInput, branchInput, userId) => {
         const localOrgRepo = new InMemoryOrganizationRepository();
-        const localBranchRepo = new InMemoryBranchRepository();
         const localAudit = new InMemoryAuditService();
         const orgResult = await createOrganization(orgInput, userId, { organizationRepository: localOrgRepo, auditService: localAudit });
         if (!orgResult.success) return;
-        const branchResult = await createBranch(orgResult.data.id, branchInput, userId, { branchRepository: localBranchRepo, auditService: localAudit });
+        const branchResult = await createBranch(orgResult.data.id, branchInput, userId, { organizationRepository: localOrgRepo, auditService: localAudit });
         if (!branchResult.success) return;
         const tenantContext = { organizationId: orgResult.data.id, userId };
-        const found = await getBranch(tenantContext, branchResult.data.id, { branchRepository: localBranchRepo });
+        const found = await getBranch(tenantContext, branchResult.data.id, { organizationRepository: localOrgRepo });
         expect(found.success).toBe(true);
         if (found.success) {
           expect(found.data.organizationId).toBe(orgResult.data.id);

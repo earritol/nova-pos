@@ -1,5 +1,5 @@
 import type { Branch } from '../../domain/branch';
-import type { BranchRepository } from '../../domain/repositories/branch-repository';
+import type { OrganizationRepository } from '../../domain/repositories/organization-repository';
 import type { AuditService } from '../../domain/audit';
 import type { TenantContext } from '../../domain/tenant-context';
 import type { UpdateBranchInput } from '../../domain/validation/branch-validation';
@@ -8,7 +8,7 @@ import { ok, fail } from '../../domain/result';
 import { validateUpdateBranch } from '../../domain/validation/branch-validation';
 
 export interface UpdateBranchDeps {
-  branchRepository: BranchRepository;
+  organizationRepository: OrganizationRepository;
   auditService: AuditService;
 }
 
@@ -23,13 +23,13 @@ export async function updateBranch(
     return fail('VALIDATION_ERROR', 'Invalid branch data', validation.errors);
   }
 
-  const existing = await deps.branchRepository.findById(tenantContext.organizationId, branchId);
+  const existing = await deps.organizationRepository.findBranchById(tenantContext.organizationId, branchId);
   if (!existing) {
     return fail('BRANCH_NOT_FOUND', 'Branch does not exist');
   }
 
   if (input.name !== undefined && input.name !== existing.name) {
-    const duplicate = await deps.branchRepository.findByName(tenantContext.organizationId, input.name);
+    const duplicate = await deps.organizationRepository.findBranchByName(tenantContext.organizationId, input.name);
     if (duplicate) {
       return fail('DUPLICATE_BRANCH_NAME', 'Branch name already exists in this organization');
     }
@@ -52,7 +52,7 @@ export async function updateBranch(
     updated.phone = input.phone;
   }
 
-  await deps.branchRepository.update(updated);
+  await deps.organizationRepository.updateBranch(tenantContext.organizationId, updated);
 
   await deps.auditService.record({
     organizationId: tenantContext.organizationId,

@@ -1,5 +1,5 @@
 import type { Branch } from '../../domain/branch';
-import type { BranchRepository } from '../../domain/repositories/branch-repository';
+import type { OrganizationRepository } from '../../domain/repositories/organization-repository';
 import type { AuditService } from '../../domain/audit';
 import type { Result } from '../../domain/result';
 import type { CreateBranchInput } from '../../domain/validation/branch-validation';
@@ -7,7 +7,7 @@ import { ok, fail } from '../../domain/result';
 import { validateCreateBranch } from '../../domain/validation/branch-validation';
 
 export interface CreateBranchDeps {
-  branchRepository: BranchRepository;
+  organizationRepository: OrganizationRepository;
   auditService: AuditService;
 }
 
@@ -22,8 +22,13 @@ export async function createBranch(
     return fail('VALIDATION_ERROR', 'Invalid branch data', validation.errors);
   }
 
-  const existing = await deps.branchRepository.findByName(orgId, input.name);
-  if (existing) {
+  const existingByCode = await deps.organizationRepository.findBranchByCode(orgId, input.code);
+  if (existingByCode) {
+    return fail('DUPLICATE_BRANCH_CODE', 'Branch code already exists in this organization');
+  }
+
+  const existingByName = await deps.organizationRepository.findBranchByName(orgId, input.name);
+  if (existingByName) {
     return fail('DUPLICATE_BRANCH_NAME', 'Branch name already exists in this organization');
   }
 
@@ -43,7 +48,7 @@ export async function createBranch(
     updatedBy: userId,
   };
 
-  await deps.branchRepository.save(branch);
+  await deps.organizationRepository.saveBranch(orgId, branch);
 
   await deps.auditService.record({
     organizationId: orgId,
