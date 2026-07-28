@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 interface BranchData {
   id: string;
   name: string;
+  code: string;
   address: string;
   phone: string;
   status: 'active' | 'inactive';
@@ -27,6 +28,7 @@ export function BranchListView() {
       <thead>
         <tr>
           <th>Name</th>
+          <th>Code</th>
           <th>Address</th>
           <th>Phone</th>
           <th>Status</th>
@@ -36,6 +38,7 @@ export function BranchListView() {
         {branches.map((branch) => (
           <tr key={branch.id}>
             <td>{branch.name}</td>
+            <td>{branch.code}</td>
             <td>{branch.address}</td>
             <td>{branch.phone}</td>
             <td>{branch.status}</td>

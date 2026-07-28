@@ -22,14 +22,17 @@ export function CreateBranchForm() {
     setSuccess(false);
 
     const formData = new FormData(event.currentTarget);
+    const code = formData.get('code') as string;
     const input = {
       name: formData.get('name') as string,
+      code,
       address: formData.get('address') as string,
       phone: formData.get('phone') as string,
     };
 
     const validationErrors: FieldError[] = [];
     if (!input.name?.trim()) validationErrors.push({ field: 'name', message: 'Branch name is required' });
+    if (!code?.trim()) validationErrors.push({ field: 'code', message: 'Branch code is required' });
     if (!input.address?.trim()) validationErrors.push({ field: 'address', message: 'Address is required' });
     if (!input.phone?.trim()) validationErrors.push({ field: 'phone', message: 'Phone is required' });
 
@@ -48,6 +51,12 @@ export function CreateBranchForm() {
         <label htmlFor="name">Branch Name *</label>
         <input id="name" name="name" type="text" required aria-describedby="name-error" />
         {getFieldError('name') && <p id="name-error" role="alert">{getFieldError('name')}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="code">Branch Code *</label>
+        <input id="code" name="code" type="text" required aria-describedby="code-error" />
+        {getFieldError('code') && <p id="code-error" role="alert">{getFieldError('code')}</p>}
       </div>
 
       <div>

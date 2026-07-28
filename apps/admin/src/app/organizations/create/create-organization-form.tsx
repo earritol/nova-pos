@@ -24,7 +24,7 @@ export function CreateOrganizationForm() {
     const formData = new FormData(event.currentTarget);
     const input = {
       legalName: formData.get('legalName') as string,
-      tradeName: formData.get('tradeName') as string,
+      commercialName: formData.get('commercialName') as string,
       taxIdentifier: formData.get('taxIdentifier') as string,
       country: formData.get('country') as string,
       timeZone: formData.get('timeZone') as string,
@@ -37,7 +37,7 @@ export function CreateOrganizationForm() {
     // Client-side validation
     const validationErrors: FieldError[] = [];
     if (!input.legalName?.trim()) validationErrors.push({ field: 'legalName', message: 'Legal name is required' });
-    if (!input.tradeName?.trim()) validationErrors.push({ field: 'tradeName', message: 'Trade name is required' });
+    if (!input.commercialName?.trim()) validationErrors.push({ field: 'commercialName', message: 'Commercial Name is required' });
     if (!input.taxIdentifier?.trim()) validationErrors.push({ field: 'taxIdentifier', message: 'Tax identifier is required' });
     if (!input.country) validationErrors.push({ field: 'country', message: 'Country is required' });
     if (!input.timeZone) validationErrors.push({ field: 'timeZone', message: 'Time zone is required' });
@@ -61,9 +61,9 @@ export function CreateOrganizationForm() {
       </div>
 
       <div>
-        <label htmlFor="tradeName">Trade Name *</label>
-        <input id="tradeName" name="tradeName" type="text" required aria-describedby="tradeName-error" />
-        {getFieldError('tradeName') && <p id="tradeName-error" role="alert">{getFieldError('tradeName')}</p>}
+        <label htmlFor="commercialName">Commercial Name *</label>
+        <input id="commercialName" name="commercialName" type="text" required aria-describedby="commercialName-error" />
+        {getFieldError('commercialName') && <p id="commercialName-error" role="alert">{getFieldError('commercialName')}</p>}
       </div>
 
       <div>

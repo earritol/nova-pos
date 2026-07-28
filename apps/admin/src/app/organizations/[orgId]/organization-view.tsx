@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 interface OrganizationData {
   id: string;
   legalName: string;
-  tradeName: string;
+  commercialName: string;
   taxIdentifier: string;
   country: string;
   configuration: {
@@ -42,7 +42,7 @@ export function OrganizationView() {
   return (
     <article>
       <header>
-        <h2>{organization.tradeName}</h2>
+        <h2>{organization.commercialName}</h2>
         <span aria-label="sync status">{syncStatus === 'synced' ? '✓ Synced' : syncStatus === 'pending' ? '⏳ Pending sync' : '⚠️ Conflict'}</span>
       </header>
 
@@ -50,8 +50,8 @@ export function OrganizationView() {
         <dt>Legal Name</dt>
         <dd>{organization.legalName}</dd>
 
-        <dt>Trade Name</dt>
-        <dd>{organization.tradeName}</dd>
+        <dt>Commercial Name</dt>
+        <dd>{organization.commercialName}</dd>
 
         <dt>Tax Identifier</dt>
         <dd>{organization.taxIdentifier}</dd>

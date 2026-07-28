@@ -24,7 +24,7 @@ export function UpdateOrganizationForm() {
     const formData = new FormData(event.currentTarget);
     const input = {
       legalName: formData.get('legalName') as string,
-      tradeName: formData.get('tradeName') as string,
+      commercialName: formData.get('commercialName') as string,
       taxIdentifier: formData.get('taxIdentifier') as string,
       contactEmail: (formData.get('contactEmail') as string) || null,
       contactPhone: (formData.get('contactPhone') as string) || null,
@@ -33,7 +33,7 @@ export function UpdateOrganizationForm() {
 
     const validationErrors: FieldError[] = [];
     if (!input.legalName?.trim()) validationErrors.push({ field: 'legalName', message: 'Legal name cannot be empty' });
-    if (!input.tradeName?.trim()) validationErrors.push({ field: 'tradeName', message: 'Trade name cannot be empty' });
+    if (!input.commercialName?.trim()) validationErrors.push({ field: 'commercialName', message: 'Commercial Name cannot be empty' });
     if (!input.taxIdentifier?.trim()) validationErrors.push({ field: 'taxIdentifier', message: 'Tax identifier cannot be empty' });
 
     if (validationErrors.length > 0) {
@@ -48,9 +48,9 @@ export function UpdateOrganizationForm() {
   return (
     <form onSubmit={handleSubmit} noValidate>
       <div>
-        <label htmlFor="tradeName">Trade Name *</label>
-        <input id="tradeName" name="tradeName" type="text" required aria-describedby="tradeName-error" />
-        {getFieldError('tradeName') && <p id="tradeName-error" role="alert">{getFieldError('tradeName')}</p>}
+        <label htmlFor="commercialName">Commercial Name *</label>
+        <input id="commercialName" name="commercialName" type="text" required aria-describedby="commercialName-error" />
+        {getFieldError('commercialName') && <p id="commercialName-error" role="alert">{getFieldError('commercialName')}</p>}
       </div>
       <div>
         <label htmlFor="legalName">Legal Name *</label>
