@@ -5,7 +5,7 @@ export type OrganizationStatus = 'active' | 'suspended';
 export interface Organization {
   id: string;
   legalName: string;
-  tradeName: string;
+  commercialName: string;
   taxIdentifier: string;
   country: string;
   configuration: OrganizationConfiguration;

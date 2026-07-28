@@ -27,7 +27,7 @@ describe('Feature: core-001-organization, Property 1: Organization creation roun
         const org = result.data;
         expect(org.status).toBe('active');
         expect(org.legalName).toBe(input.legalName);
-        expect(org.tradeName).toBe(input.tradeName);
+        expect(org.commercialName).toBe(input.commercialName);
         expect(org.taxIdentifier).toBe(input.taxIdentifier);
         expect(org.createdBy).toBe(userId);
         expect(org.id).toBeTruthy();
@@ -92,10 +92,10 @@ describe('Feature: core-001-organization, Property 7: Organization update persis
         const created = await createOrganization(input, userId, { organizationRepository: orgRepo, auditService });
         if (!created.success) return;
         const tenantContext = { organizationId: created.data.id, userId };
-        const result = await updateOrganization(tenantContext, { tradeName: 'Updated' }, { organizationRepository: orgRepo, auditService });
+        const result = await updateOrganization(tenantContext, { commercialName: 'Updated' }, { organizationRepository: orgRepo, auditService });
         expect(result.success).toBe(true);
         if (!result.success) return;
-        expect(result.data.tradeName).toBe('Updated');
+        expect(result.data.commercialName).toBe('Updated');
         expect(result.data.updatedAt >= created.data.updatedAt).toBe(true);
         expect(result.data.updatedBy).toBe(userId);
       }),

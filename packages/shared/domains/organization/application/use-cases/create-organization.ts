@@ -33,7 +33,7 @@ export async function createOrganization(
   const org: Organization = {
     id: crypto.randomUUID(),
     legalName: input.legalName,
-    tradeName: input.tradeName,
+    commercialName: input.commercialName,
     taxIdentifier: input.taxIdentifier,
     country: input.country,
     configuration: {

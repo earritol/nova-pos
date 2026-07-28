@@ -9,7 +9,7 @@ export class OrganizationRemoteRepository implements OrganizationRepository {
     const { error } = await this.client.from('organizations').insert({
       id: org.id,
       legal_name: org.legalName,
-      trade_name: org.tradeName,
+      commercial_name: org.commercialName,
       tax_identifier: org.taxIdentifier,
       country: org.country,
       time_zone: org.configuration.timeZone,
@@ -54,7 +54,7 @@ export class OrganizationRemoteRepository implements OrganizationRepository {
       .from('organizations')
       .update({
         legal_name: org.legalName,
-        trade_name: org.tradeName,
+        commercial_name: org.commercialName,
         tax_identifier: org.taxIdentifier,
         country: org.country,
         time_zone: org.configuration.timeZone,
@@ -76,7 +76,7 @@ export class OrganizationRemoteRepository implements OrganizationRepository {
     return {
       id: row['id'] as string,
       legalName: row['legal_name'] as string,
-      tradeName: row['trade_name'] as string,
+      commercialName: row['commercial_name'] as string,
       taxIdentifier: row['tax_identifier'] as string,
       country: row['country'] as string,
       configuration: {

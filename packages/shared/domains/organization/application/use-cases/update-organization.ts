@@ -36,9 +36,9 @@ export async function updateOrganization(
     changes['legalName'] = { from: existing.legalName, to: input.legalName };
     updated.legalName = input.legalName;
   }
-  if (input.tradeName !== undefined && input.tradeName !== existing.tradeName) {
-    changes['tradeName'] = { from: existing.tradeName, to: input.tradeName };
-    updated.tradeName = input.tradeName;
+  if (input.commercialName !== undefined && input.commercialName !== existing.commercialName) {
+    changes['commercialName'] = { from: existing.commercialName, to: input.commercialName };
+    updated.commercialName = input.commercialName;
   }
   if (input.taxIdentifier !== undefined && input.taxIdentifier !== existing.taxIdentifier) {
     changes['taxIdentifier'] = { from: existing.taxIdentifier, to: input.taxIdentifier };

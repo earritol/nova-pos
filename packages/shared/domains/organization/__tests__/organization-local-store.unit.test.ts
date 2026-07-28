@@ -7,7 +7,7 @@ function createOrg(overrides: Partial<Organization> = {}): Organization {
   return {
     id: crypto.randomUUID(),
     legalName: 'Test Legal',
-    tradeName: 'Test Trade',
+    commercialName: 'Test Trade',
     taxIdentifier: 'TAX123',
     country: 'MEX',
     configuration: {
@@ -67,9 +67,9 @@ describe('OrganizationLocalStore', () => {
   it('updates an existing organization', async () => {
     const org = createOrg();
     await store.save(org);
-    const updated = { ...org, tradeName: 'Updated Trade' };
+    const updated = { ...org, commercialName: 'Updated Trade' };
     await store.update(updated);
     const found = await store.findById(org.id);
-    expect(found!.tradeName).toBe('Updated Trade');
+    expect(found!.commercialName).toBe('Updated Trade');
   });
 });

@@ -77,6 +77,7 @@ export class BranchRemoteRepository implements BranchRepository {
       id: row['id'] as string,
       organizationId: row['organization_id'] as string,
       name: row['name'] as string,
+      code: row['code'] as string,
       address: row['address'] as string,
       phone: row['phone'] as string,
       status: row['status'] as 'active' | 'inactive',

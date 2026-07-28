@@ -3,6 +3,7 @@ import type { FieldError } from '../result';
 
 export interface CreateBranchInput {
   name: string;
+  code: string;
   address: string;
   phone: string;
 }
@@ -24,6 +25,12 @@ export function validateCreateBranch(data: CreateBranchInput): ValidationResult 
     errors.push({ field: 'name', message: 'Branch name is required' });
   } else if (data.name.length > 255) {
     errors.push({ field: 'name', message: 'Branch name must not exceed 255 characters' });
+  }
+
+  if (!isNonEmptyString(data.code)) {
+    errors.push({ field: 'code', message: 'Branch code is required' });
+  } else if (data.code.length > 50) {
+    errors.push({ field: 'code', message: 'Branch code must not exceed 50 characters' });
   }
 
   if (!isNonEmptyString(data.address)) {

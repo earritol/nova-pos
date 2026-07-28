@@ -33,6 +33,7 @@ export async function createBranch(
     id: crypto.randomUUID(),
     organizationId: orgId,
     name: input.name,
+    code: input.code,
     address: input.address,
     phone: input.phone,
     status: 'active',

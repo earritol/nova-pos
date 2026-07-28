@@ -16,7 +16,7 @@ const baseConfig: OrganizationConfiguration = {
 const activeOrg: fc.Arbitrary<Organization> = fc.record({
   id: fc.uuid(),
   legalName: fc.string({ minLength: 1 }),
-  tradeName: fc.string({ minLength: 1 }),
+  commercialName: fc.string({ minLength: 1 }),
   taxIdentifier: fc.string({ minLength: 1 }),
   country: fc.constant('MEX'),
   configuration: fc.constant(baseConfig),
@@ -39,6 +39,7 @@ const activeBranch: fc.Arbitrary<Branch> = fc.record({
   id: fc.uuid(),
   organizationId: fc.uuid(),
   name: fc.string({ minLength: 1 }),
+  code: fc.string({ minLength: 1, maxLength: 50 }).filter(s => s.trim().length > 0),
   address: fc.string({ minLength: 1 }),
   phone: fc.string({ minLength: 1 }),
   status: fc.constant('active' as const),

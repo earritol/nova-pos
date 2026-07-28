@@ -22,7 +22,7 @@ export const validEmail = fc.tuple(
 
 export const validCreateOrganizationInput: fc.Arbitrary<CreateOrganizationInput> = fc.record({
   legalName: nonEmptyString(255),
-  tradeName: nonEmptyString(255),
+  commercialName: nonEmptyString(255),
   taxIdentifier: nonEmptyString(100),
   country: validCountry,
   timeZone: validTimeZone,
@@ -35,7 +35,7 @@ export const validCreateOrganizationInput: fc.Arbitrary<CreateOrganizationInput>
 export const invalidCreateOrganizationInput: fc.Arbitrary<CreateOrganizationInput> = fc.oneof(
   fc.record({
     legalName: fc.constant(''),
-    tradeName: nonEmptyString(255),
+    commercialName: nonEmptyString(255),
     taxIdentifier: nonEmptyString(100),
     country: validCountry,
     timeZone: validTimeZone,
@@ -43,7 +43,7 @@ export const invalidCreateOrganizationInput: fc.Arbitrary<CreateOrganizationInpu
   }),
   fc.record({
     legalName: nonEmptyString(255),
-    tradeName: fc.constant('   '),
+    commercialName: fc.constant('   '),
     taxIdentifier: nonEmptyString(100),
     country: validCountry,
     timeZone: validTimeZone,
@@ -51,7 +51,7 @@ export const invalidCreateOrganizationInput: fc.Arbitrary<CreateOrganizationInpu
   }),
   fc.record({
     legalName: nonEmptyString(255),
-    tradeName: nonEmptyString(255),
+    commercialName: nonEmptyString(255),
     taxIdentifier: fc.constant(''),
     country: validCountry,
     timeZone: validTimeZone,
@@ -59,7 +59,7 @@ export const invalidCreateOrganizationInput: fc.Arbitrary<CreateOrganizationInpu
   }),
   fc.record({
     legalName: nonEmptyString(255),
-    tradeName: nonEmptyString(255),
+    commercialName: nonEmptyString(255),
     taxIdentifier: nonEmptyString(100),
     country: fc.constant('INVALID'),
     timeZone: validTimeZone,
@@ -67,7 +67,7 @@ export const invalidCreateOrganizationInput: fc.Arbitrary<CreateOrganizationInpu
   }),
   fc.record({
     legalName: nonEmptyString(255),
-    tradeName: nonEmptyString(255),
+    commercialName: nonEmptyString(255),
     taxIdentifier: nonEmptyString(100),
     country: validCountry,
     timeZone: fc.constant('Invalid/Zone'),
@@ -75,7 +75,7 @@ export const invalidCreateOrganizationInput: fc.Arbitrary<CreateOrganizationInpu
   }),
   fc.record({
     legalName: nonEmptyString(255),
-    tradeName: nonEmptyString(255),
+    commercialName: nonEmptyString(255),
     taxIdentifier: nonEmptyString(100),
     country: validCountry,
     timeZone: validTimeZone,
@@ -85,6 +85,7 @@ export const invalidCreateOrganizationInput: fc.Arbitrary<CreateOrganizationInpu
 
 export const validCreateBranchInput: fc.Arbitrary<CreateBranchInput> = fc.record({
   name: nonEmptyString(255),
+  code: nonEmptyString(50),
   address: nonEmptyString(500),
   phone: nonEmptyString(50),
 });
@@ -92,16 +93,25 @@ export const validCreateBranchInput: fc.Arbitrary<CreateBranchInput> = fc.record
 export const invalidCreateBranchInput: fc.Arbitrary<CreateBranchInput> = fc.oneof(
   fc.record({
     name: fc.constant(''),
+    code: nonEmptyString(50),
     address: nonEmptyString(500),
     phone: nonEmptyString(50),
   }),
   fc.record({
     name: nonEmptyString(255),
+    code: fc.constant(''),
+    address: nonEmptyString(500),
+    phone: nonEmptyString(50),
+  }),
+  fc.record({
+    name: nonEmptyString(255),
+    code: nonEmptyString(50),
     address: fc.constant(''),
     phone: nonEmptyString(50),
   }),
   fc.record({
     name: nonEmptyString(255),
+    code: nonEmptyString(50),
     address: nonEmptyString(500),
     phone: fc.constant('   '),
   }),

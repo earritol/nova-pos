@@ -32,7 +32,7 @@ describe('Feature: core-001-organization, Property 13: Audit trail completeness'
         const created = await createOrganization(input, userId, { organizationRepository: localOrgRepo, auditService: localAudit });
         if (!created.success) return;
         const tenantContext = { organizationId: created.data.id, userId };
-        await updateOrganization(tenantContext, { tradeName: 'NewName' }, { organizationRepository: localOrgRepo, auditService: localAudit });
+        await updateOrganization(tenantContext, { commercialName: 'NewName' }, { organizationRepository: localOrgRepo, auditService: localAudit });
         const updateEntries = localAudit.entries.filter((e) => e.action === 'updated');
         expect(updateEntries.length).toBeGreaterThanOrEqual(1);
       }),
@@ -50,7 +50,7 @@ describe('Feature: core-001-organization, Property 14: Audit history ordering', 
         const created = await createOrganization(input, userId, { organizationRepository: localOrgRepo, auditService: localAudit });
         if (!created.success) return;
         const tenantContext = { organizationId: created.data.id, userId };
-        await updateOrganization(tenantContext, { tradeName: 'V2' }, { organizationRepository: localOrgRepo, auditService: localAudit });
+        await updateOrganization(tenantContext, { commercialName: 'V2' }, { organizationRepository: localOrgRepo, auditService: localAudit });
         await suspendOrganizationUseCase(tenantContext, { organizationRepository: localOrgRepo, auditService: localAudit });
         const history = await localAudit.getHistory('organization', created.data.id);
         for (let i = 0; i < history.length - 1; i++) {

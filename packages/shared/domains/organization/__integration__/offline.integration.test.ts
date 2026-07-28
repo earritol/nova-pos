@@ -9,7 +9,7 @@ function makeOrg(overrides: Partial<Organization> = {}): Organization {
   return {
     id: crypto.randomUUID(),
     legalName: 'Test Legal',
-    tradeName: 'Test Trade',
+    commercialName: 'Test Trade',
     taxIdentifier: 'RFC-' + crypto.randomUUID().slice(0, 8),
     country: 'MEX',
     configuration: {
@@ -35,6 +35,7 @@ function makeBranch(orgId: string, overrides: Partial<Branch> = {}): Branch {
     id: crypto.randomUUID(),
     organizationId: orgId,
     name: 'Branch ' + crypto.randomUUID().slice(0, 4),
+    code: 'BR-' + crypto.randomUUID().slice(0, 4),
     address: '123 Main St',
     phone: '555-0100',
     status: 'active',
@@ -55,7 +56,7 @@ describe('Integration: Offline read/write', () => {
     expect(found).not.toBeNull();
     expect(found!.id).toBe(org.id);
     expect(found!.legalName).toBe(org.legalName);
-    expect(found!.tradeName).toBe(org.tradeName);
+    expect(found!.commercialName).toBe(org.commercialName);
     expect(found!.taxIdentifier).toBe(org.taxIdentifier);
     expect(found!.country).toBe(org.country);
     expect(found!.status).toBe('active');
@@ -78,9 +79,9 @@ describe('Integration: Offline read/write', () => {
     const store = new OrganizationLocalStore();
     const org = makeOrg();
     await store.save(org);
-    const updated = { ...org, tradeName: 'Updated Trade Name' };
+    const updated = { ...org, commercialName: 'Updated Commercial name' };
     await store.update(updated);
     const found = await store.findById(org.id);
-    expect(found!.tradeName).toBe('Updated Trade Name');
+    expect(found!.commercialName).toBe('Updated Commercial name');
   });
 });

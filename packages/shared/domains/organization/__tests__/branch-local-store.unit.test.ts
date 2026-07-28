@@ -10,6 +10,7 @@ function createBranch(overrides: Partial<Branch> = {}): Branch {
     id: crypto.randomUUID(),
     organizationId: ORG_ID,
     name: 'Main Branch',
+    code: 'Main Branch-CODE',
     address: '123 Main St',
     phone: '555-0100',
     status: 'active',

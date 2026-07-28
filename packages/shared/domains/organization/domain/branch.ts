@@ -4,6 +4,7 @@ export interface Branch {
   id: string;
   organizationId: string;
   name: string;
+  code: string;
   address: string;
   phone: string;
   status: BranchStatus;

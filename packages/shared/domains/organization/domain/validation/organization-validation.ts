@@ -4,7 +4,7 @@ import { COUNTRY_DEFAULTS } from '../organization-configuration';
 
 export interface CreateOrganizationInput {
   legalName: string;
-  tradeName: string;
+  commercialName: string;
   taxIdentifier: string;
   country: string;
   timeZone: string;
@@ -16,7 +16,7 @@ export interface CreateOrganizationInput {
 
 export interface UpdateOrganizationInput {
   legalName?: string;
-  tradeName?: string;
+  commercialName?: string;
   taxIdentifier?: string;
   contactEmail?: string | null;
   contactPhone?: string | null;
@@ -56,10 +56,10 @@ export function validateCreateOrganization(data: CreateOrganizationInput): Valid
     errors.push({ field: 'legalName', message: 'Legal name must not exceed 255 characters' });
   }
 
-  if (!isNonEmptyString(data.tradeName)) {
-    errors.push({ field: 'tradeName', message: 'Trade name is required' });
-  } else if (data.tradeName.length > 255) {
-    errors.push({ field: 'tradeName', message: 'Trade name must not exceed 255 characters' });
+  if (!isNonEmptyString(data.commercialName)) {
+    errors.push({ field: 'commercialName', message: 'Commercial name is required' });
+  } else if (data.commercialName.length > 255) {
+    errors.push({ field: 'commercialName', message: 'Commercial name must not exceed 255 characters' });
   }
 
   if (!isNonEmptyString(data.taxIdentifier)) {
@@ -118,11 +118,11 @@ export function validateUpdateOrganization(data: UpdateOrganizationInput): Valid
     }
   }
 
-  if (data.tradeName !== undefined) {
-    if (!isNonEmptyString(data.tradeName)) {
-      errors.push({ field: 'tradeName', message: 'Trade name cannot be empty' });
-    } else if (data.tradeName.length > 255) {
-      errors.push({ field: 'tradeName', message: 'Trade name must not exceed 255 characters' });
+  if (data.commercialName !== undefined) {
+    if (!isNonEmptyString(data.commercialName)) {
+      errors.push({ field: 'commercialName', message: 'Commercial name cannot be empty' });
+    } else if (data.commercialName.length > 255) {
+      errors.push({ field: 'commercialName', message: 'Commercial name must not exceed 255 characters' });
     }
   }
 

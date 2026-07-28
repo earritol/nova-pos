@@ -52,7 +52,7 @@ describe('Integration: RLS tenant isolation', () => {
     const audit = new NoopAuditService();
 
     const result = await createOrganization(
-      { legalName: 'Org A', tradeName: 'A', taxIdentifier: 'TAX-A', country: 'MEX', timeZone: 'America/Mexico_City', currency: 'MXN' },
+      { legalName: 'Org A', commercialName: 'A', taxIdentifier: 'TAX-A', country: 'MEX', timeZone: 'America/Mexico_City', currency: 'MXN' },
       'user-1',
       { organizationRepository: orgRepo, auditService: audit },
     );
@@ -74,7 +74,7 @@ describe('Integration: RLS tenant isolation', () => {
     const audit = new NoopAuditService();
 
     const orgResult = await createOrganization(
-      { legalName: 'Org B', tradeName: 'B', taxIdentifier: 'TAX-B', country: 'USA', timeZone: 'America/New_York', currency: 'USD' },
+      { legalName: 'Org B', commercialName: 'B', taxIdentifier: 'TAX-B', country: 'USA', timeZone: 'America/New_York', currency: 'USD' },
       'user-1',
       { organizationRepository: orgRepo, auditService: audit },
     );
@@ -83,7 +83,7 @@ describe('Integration: RLS tenant isolation', () => {
 
     const branchResult = await createBranch(
       orgResult.data.id,
-      { name: 'Main', address: '123 St', phone: '555-0100' },
+      { name: 'Main', code: 'MAIN', address: '123 St', phone: '555-0100' },
       'user-1',
       { branchRepository: branchRepo, auditService: audit },
     );
@@ -108,7 +108,7 @@ describe('Integration: RLS tenant isolation', () => {
     const audit = new NoopAuditService();
 
     const org1 = await createOrganization(
-      { legalName: 'Org 1', tradeName: '1', taxIdentifier: 'TAX-1', country: 'MEX', timeZone: 'America/Mexico_City', currency: 'MXN' },
+      { legalName: 'Org 1', commercialName: '1', taxIdentifier: 'TAX-1', country: 'MEX', timeZone: 'America/Mexico_City', currency: 'MXN' },
       'user-1',
       { organizationRepository: orgRepo, auditService: audit },
     );
@@ -116,7 +116,7 @@ describe('Integration: RLS tenant isolation', () => {
 
     const branch = await createBranch(
       org1.data.id,
-      { name: 'Centro', address: 'Av Central', phone: '555-0001' },
+      { name: 'Centro', code: 'CENTRO', address: 'Av Central', phone: '555-0001' },
       'user-1',
       { branchRepository: branchRepo, auditService: audit },
     );

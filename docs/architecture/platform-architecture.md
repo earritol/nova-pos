@@ -424,7 +424,9 @@ Project Steering:
 
 Architecture Decision Records:
 
-- docs/architecture/adr/
+See:
+
+docs/decisions/
 
 Specifications:
 
