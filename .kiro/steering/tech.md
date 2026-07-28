@@ -44,6 +44,24 @@ Presentation consumes Application.
 
 ---
 
+## Application Layer
+
+Application is responsible for orchestration.
+
+Responsibilities include:
+
+- Execute use cases.
+- Coordinate repository interactions.
+- Trigger synchronization.
+- Trigger auditing.
+- Return Result<T>.
+
+Application must never contain business rules.
+
+Business rules always belong to the Domain layer.
+
+---
+
 ## Frontend
 
 Framework:
@@ -126,6 +144,22 @@ Every feature must consider:
 - Synchronization
 - Conflict detection
 - Recovery
+
+Synchronization should always occur after successful local persistence.
+
+The preferred write flow is:
+
+Local Persistence
+    ↓
+Synchronization Queue
+    ↓
+Audit
+    ↓
+Return Success
+    ↓
+Background Synchronization
+
+Application code should never write directly to the remote database during normal user operations.
 
 ---
 
@@ -225,6 +259,10 @@ Critical business logic must always be tested.
 Every design should define Correctness Properties.
 
 Correctness Properties should be implemented as Property-Based Tests.
+
+Repository implementations should preserve domain behavior across persistence boundaries.
+
+Whenever mapping between domain models and persistence models exists, round-trip correctness should be verified through Property-Based Tests when appropriate.
 
 ---
 

@@ -78,6 +78,44 @@ Each domain owns:
 
 ---
 
+## Internal Module Structure
+
+Each domain should follow a consistent internal organization.
+
+Recommended layout:
+
+domain/
+    entities/
+    value-objects/
+    services/
+    repositories/
+    lifecycle/
+    validation/
+    index.ts
+
+application/
+    use-cases/
+    application-service.ts
+    index.ts
+
+infrastructure/
+    local/
+    remote/
+    mappers/
+    index.ts
+
+presentation/
+    components/
+    routes/
+
+tests/
+    unit/
+    property/
+
+Not every module requires every folder, but the overall organization should remain consistent across the platform.
+
+--
+
 # Layer Responsibilities
 
 Each domain follows the same architecture.
@@ -156,6 +194,18 @@ Infrastructure
 Packages must never depend on applications.
 
 Applications may depend on packages.
+
+---
+
+## Application Service Pattern
+
+Every domain exposes a single Application Service that acts as the public entry point for the Presentation layer.
+
+Presentation should never call repositories directly.
+
+Application Services orchestrate use cases without containing business rules.
+
+Business rules always remain inside the Domain layer.
 
 ---
 
